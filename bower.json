@@ -1,0 +1,18 @@
+{
+  "name": "daily-commit",
+  "description": "watching for git commit from group",
+  "main": "server.js",
+  "authors": [
+    "jojoldu@gmail.com"
+  ],
+  "license": "MIT",
+  "moduleType": [],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
