@@ -85,5 +85,10 @@ app.get('/github', function(req, res){
     res.render('github',userInfo);
 });
 
+app.post('/github/push', function(req, res){
+    var commit = req.body;
+    console.log(req);
+});
+
 app.listen(8080);
 console.log('Express Listening on port 8080...');
