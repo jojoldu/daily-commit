@@ -87,7 +87,7 @@ app.get('/github', function(req, res){
     res.render('github',userInfo);
 });
 
-app.post('/github/push', function(req, res){
+app.post('/payload', function(req, res){
     var commit = req.body;
     console.log(req);
 });
