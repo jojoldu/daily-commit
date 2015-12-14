@@ -28,12 +28,14 @@ app.set('view engine', 'ejs');
 
 
 app.all('/github', function(req, res, next){
-    if(req.session && req.session.isAuth){
-        next();
-        return;
-    }
-
-    res.redirect('/');
+    //if(req.session && req.session.isAuth){
+    //    next();
+    //    return;
+    //}
+    //
+    //res.redirect('/');
+    next();
+    return;
 });
 
 app.get('/', function(req, res){
