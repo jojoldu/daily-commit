@@ -28,14 +28,12 @@ app.set('view engine', 'ejs');
 
 
 app.all('/github', function(req, res, next){
-    //if(req.session && req.session.isAuth){
-    //    next();
-    //    return;
-    //}
-    //
-    //res.redirect('/');
-    next();
-    return;
+    if(req.session && req.session.isAuth){
+        next();
+        return;
+    }
+
+    res.redirect('/');
 });
 
 app.get('/', function(req, res){
@@ -88,8 +86,22 @@ app.get('/github', function(req, res){
 });
 
 app.post('/payload', function(req, res){
-    var commit = req.body;
-    console.log(req);
+    var body = req.body;
+
+    var payload={
+        name : body.pusher.name,
+        email : body.pusher.email,
+        repository : {
+            full_name : body.repository.full_name,
+            url : body.repository.url,
+            description : body.repository.description
+        },
+        commits : body.commits,
+    }
+
+    //db.save();
+
+    return next();
 });
 
 app.listen(8080);
