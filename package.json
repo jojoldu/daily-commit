@@ -18,8 +18,13 @@
   },
   "homepage": "https://github.com/jojoldu/daily-commit",
   "dependencies": {
+    "body-parser": "^1.14.1",
     "ejs": "^2.3.4",
     "express": "^4.13.3",
-    "path": "^0.12.7"
+    "express-session": "^1.12.1",
+    "path": "^0.12.7",
+    "query-string": "^3.0.0",
+    "request": "^2.67.0",
+    "url": "^0.11.0"
   }
 }
