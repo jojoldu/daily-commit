@@ -19,6 +19,7 @@
   "homepage": "https://github.com/jojoldu/daily-commit",
   "dependencies": {
     "ejs": "^2.3.4",
-    "express": "^4.13.3"
+    "express": "^4.13.3",
+    "path": "^0.12.7"
   }
 }
