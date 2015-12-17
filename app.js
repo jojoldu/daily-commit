@@ -10,7 +10,9 @@ var url = require('url');
 var queryString = require('query-string');
 var session = require('express-session');
 var app = express();
-
+var mongo = require('mongoskin');
+var db = mongo.db('mongodb://localhost:27017/devplanet', {native_parser:true});
+db.bind('')
 var domain = 'http://localhost:8080';
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -89,14 +91,15 @@ app.post('/payload', function(req, res){
     var body = req.body;
 
     var payload={
+        idx : body.sender.id,
         name : body.pusher.name,
         email : body.pusher.email,
         repository : {
-            full_name : body.repository.full_name,
+            name : body.repository.name,
             url : body.repository.url,
             description : body.repository.description
         },
-        commits : body.commits,
+        commits : body.commits
     }
 
     //db.save();
