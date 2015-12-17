@@ -9,11 +9,10 @@ var request = require('request');
 var url = require('url');
 var queryString = require('query-string');
 var session = require('express-session');
-var app = express();
 var mongo = require('mongoskin');
 var db = mongo.db('mongodb://localhost:27017/devplanet', {native_parser:true});
-db.bind('')
-var domain = 'http://localhost:8080';
+var domain = 'http://localhost:80';
+var app = express();
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -107,5 +106,6 @@ app.post('/payload', function(req, res){
     return next();
 });
 
-app.listen(8080);
+
+app.listen(80);
 console.log('Express Listening on port 8080...');

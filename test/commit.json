@@ -1,0 +1,159 @@
+{
+  "ref": "refs/heads/master",
+  "before": "60908cadeec7bef84025af1acd223e7df570b498",
+  "after": "ff052f00e68672be9f39bc1df6a72a7b4cfa7955",
+  "created": false,
+  "deleted": false,
+  "forced": false,
+  "base_ref": null,
+  "compare": "https://github.com/jojoldu/daily-commit/compare/60908cadeec7...ff052f00e686",
+  "commits": [
+    {
+      "id": "ff052f00e68672be9f39bc1df6a72a7b4cfa7955",
+      "distinct": true,
+      "message": "mongoskin 설치",
+      "timestamp": "2015-12-17T20:45:34+09:00",
+      "url": "https://github.com/jojoldu/daily-commit/commit/ff052f00e68672be9f39bc1df6a72a7b4cfa7955",
+      "author": {
+        "name": "이동욱",
+        "email": "jojoldu@zuminternet.com"
+      },
+      "committer": {
+        "name": "이동욱",
+        "email": "jojoldu@zuminternet.com"
+      },
+      "added": [
+
+      ],
+      "removed": [
+
+      ],
+      "modified": [
+        "app.js",
+        "package.json"
+      ]
+    }
+  ],
+  "head_commit": {
+    "id": "ff052f00e68672be9f39bc1df6a72a7b4cfa7955",
+    "distinct": true,
+    "message": "mongoskin 설치",
+    "timestamp": "2015-12-17T20:45:34+09:00",
+    "url": "https://github.com/jojoldu/daily-commit/commit/ff052f00e68672be9f39bc1df6a72a7b4cfa7955",
+    "author": {
+      "name": "이동욱",
+      "email": "jojoldu@zuminternet.com"
+    },
+    "committer": {
+      "name": "이동욱",
+      "email": "jojoldu@zuminternet.com"
+    },
+    "added": [
+
+    ],
+    "removed": [
+
+    ],
+    "modified": [
+      "app.js",
+      "package.json"
+    ]
+  },
+  "repository": {
+    "id": 47167596,
+    "name": "daily-commit",
+    "full_name": "jojoldu/daily-commit",
+    "owner": {
+      "name": "jojoldu",
+      "email": "jojoldu@naver.com"
+    },
+    "private": false,
+    "html_url": "https://github.com/jojoldu/daily-commit",
+    "description": "일일 커밋 프로젝트",
+    "fork": false,
+    "url": "https://github.com/jojoldu/daily-commit",
+    "forks_url": "https://api.github.com/repos/jojoldu/daily-commit/forks",
+    "keys_url": "https://api.github.com/repos/jojoldu/daily-commit/keys{/key_id}",
+    "collaborators_url": "https://api.github.com/repos/jojoldu/daily-commit/collaborators{/collaborator}",
+    "teams_url": "https://api.github.com/repos/jojoldu/daily-commit/teams",
+    "hooks_url": "https://api.github.com/repos/jojoldu/daily-commit/hooks",
+    "issue_events_url": "https://api.github.com/repos/jojoldu/daily-commit/issues/events{/number}",
+    "events_url": "https://api.github.com/repos/jojoldu/daily-commit/events",
+    "assignees_url": "https://api.github.com/repos/jojoldu/daily-commit/assignees{/user}",
+    "branches_url": "https://api.github.com/repos/jojoldu/daily-commit/branches{/branch}",
+    "tags_url": "https://api.github.com/repos/jojoldu/daily-commit/tags",
+    "blobs_url": "https://api.github.com/repos/jojoldu/daily-commit/git/blobs{/sha}",
+    "git_tags_url": "https://api.github.com/repos/jojoldu/daily-commit/git/tags{/sha}",
+    "git_refs_url": "https://api.github.com/repos/jojoldu/daily-commit/git/refs{/sha}",
+    "trees_url": "https://api.github.com/repos/jojoldu/daily-commit/git/trees{/sha}",
+    "statuses_url": "https://api.github.com/repos/jojoldu/daily-commit/statuses/{sha}",
+    "languages_url": "https://api.github.com/repos/jojoldu/daily-commit/languages",
+    "stargazers_url": "https://api.github.com/repos/jojoldu/daily-commit/stargazers",
+    "contributors_url": "https://api.github.com/repos/jojoldu/daily-commit/contributors",
+    "subscribers_url": "https://api.github.com/repos/jojoldu/daily-commit/subscribers",
+    "subscription_url": "https://api.github.com/repos/jojoldu/daily-commit/subscription",
+    "commits_url": "https://api.github.com/repos/jojoldu/daily-commit/commits{/sha}",
+    "git_commits_url": "https://api.github.com/repos/jojoldu/daily-commit/git/commits{/sha}",
+    "comments_url": "https://api.github.com/repos/jojoldu/daily-commit/comments{/number}",
+    "issue_comment_url": "https://api.github.com/repos/jojoldu/daily-commit/issues/comments{/number}",
+    "contents_url": "https://api.github.com/repos/jojoldu/daily-commit/contents/{+path}",
+    "compare_url": "https://api.github.com/repos/jojoldu/daily-commit/compare/{base}...{head}",
+    "merges_url": "https://api.github.com/repos/jojoldu/daily-commit/merges",
+    "archive_url": "https://api.github.com/repos/jojoldu/daily-commit/{archive_format}{/ref}",
+    "downloads_url": "https://api.github.com/repos/jojoldu/daily-commit/downloads",
+    "issues_url": "https://api.github.com/repos/jojoldu/daily-commit/issues{/number}",
+    "pulls_url": "https://api.github.com/repos/jojoldu/daily-commit/pulls{/number}",
+    "milestones_url": "https://api.github.com/repos/jojoldu/daily-commit/milestones{/number}",
+    "notifications_url": "https://api.github.com/repos/jojoldu/daily-commit/notifications{?since,all,participating}",
+    "labels_url": "https://api.github.com/repos/jojoldu/daily-commit/labels{/name}",
+    "releases_url": "https://api.github.com/repos/jojoldu/daily-commit/releases{/id}",
+    "created_at": 1448947524,
+    "updated_at": "2015-12-14T11:33:34Z",
+    "pushed_at": 1450352888,
+    "git_url": "git://github.com/jojoldu/daily-commit.git",
+    "ssh_url": "git@github.com:jojoldu/daily-commit.git",
+    "clone_url": "https://github.com/jojoldu/daily-commit.git",
+    "svn_url": "https://github.com/jojoldu/daily-commit",
+    "homepage": null,
+    "size": 12,
+    "stargazers_count": 0,
+    "watchers_count": 0,
+    "language": "JavaScript",
+    "has_issues": true,
+    "has_downloads": true,
+    "has_wiki": true,
+    "has_pages": false,
+    "forks_count": 0,
+    "mirror_url": null,
+    "open_issues_count": 0,
+    "forks": 0,
+    "open_issues": 0,
+    "watchers": 0,
+    "default_branch": "master",
+    "stargazers": 0,
+    "master_branch": "master"
+  },
+  "pusher": {
+    "name": "jojoldu",
+    "email": "jojoldu@naver.com"
+  },
+  "sender": {
+    "login": "jojoldu",
+    "id": 7760496,
+    "avatar_url": "https://avatars.githubusercontent.com/u/7760496?v=3",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/jojoldu",
+    "html_url": "https://github.com/jojoldu",
+    "followers_url": "https://api.github.com/users/jojoldu/followers",
+    "following_url": "https://api.github.com/users/jojoldu/following{/other_user}",
+    "gists_url": "https://api.github.com/users/jojoldu/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/jojoldu/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/jojoldu/subscriptions",
+    "organizations_url": "https://api.github.com/users/jojoldu/orgs",
+    "repos_url": "https://api.github.com/users/jojoldu/repos",
+    "events_url": "https://api.github.com/users/jojoldu/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/jojoldu/received_events",
+    "type": "User",
+    "site_admin": false
+  }
+}
