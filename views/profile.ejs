@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <% include layout/header %>
+</head>
+<body>
+<%=login%>
+<ul>
+    <% for(var i=0; i<history.commits.length; i++){ %>
+    <li><%=history.commits[i].message%></li>
+    <% } %>
+</ul>
+</body>
+</html>

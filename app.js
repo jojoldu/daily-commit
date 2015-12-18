@@ -11,8 +11,10 @@ var queryString = require('query-string');
 var session = require('express-session');
 var mongo = require('mongoskin');
 var db = mongo.db('mongodb://localhost:27017/devplanet', {native_parser:true});
-var domain = 'http://localhost:80';
+db.bind('commits');
 var app = express();
+var domain = 'http://localhost';
+
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -39,6 +41,15 @@ app.all('/github', function(req, res, next){
 
 app.get('/', function(req, res){
     res.render('index', {msg: 'Hello Daily-Commit Project'});
+});
+
+app.get('/:id', function(req, res){
+    var userInfo = req.session.user;
+    var idx = req.params.id;
+    db.commits.find({idx:idx}).sort({push_date : -1}).limit(10).toArray(function(err, commits){
+        userInfo.history = commits;
+        res.render('profile', userInfo);
+    });
 });
 
 app.get('/auth', function(req, res){
@@ -69,9 +80,10 @@ app.get('/auth', function(req, res){
                                 }
                     }, function (error, response, body) {
                         if(!error && response.statusCode == 200){
+                            var user = JSON.parse(body);
                             req.session.isAuth = true;
-                            req.session.user = JSON.parse(body);
-                            res.redirect('/github');
+                            req.session.user = user
+                            res.redirect('/'+user.login);
                         }else{
                             console.log('get user info error');
                             res.redirect('/');
@@ -81,15 +93,9 @@ app.get('/auth', function(req, res){
     )
 });
 
-app.get('/github', function(req, res){
-    var userInfo = req.session.user;
-    res.render('github',userInfo);
-});
-
-app.post('/payload', function(req, res){
+app.post('/commit', function(req, res){
     var body = req.body;
-
-    var payload={
+    var commit={
         idx : body.sender.id,
         name : body.pusher.name,
         email : body.pusher.email,
@@ -98,14 +104,17 @@ app.post('/payload', function(req, res){
             url : body.repository.url,
             description : body.repository.description
         },
+        push_date : body.updated_at,
         commits : body.commits
     }
 
-    //db.save();
-
-    return next();
+    db.commits.insert(commit, function(err){
+        if(err) {
+            return console.log('insert error', err);
+        }
+    });
 });
 
 
 app.listen(80);
-console.log('Express Listening on port 8080...');
+console.log('Express Listening on port 80...');
