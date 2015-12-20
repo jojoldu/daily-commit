@@ -3,17 +3,45 @@
  */
 var assert = require('assert');
 var seedCommit = require('./commit.json');
-var superagent = require('superagent');
-var expect = require('expect.js');
+var mongo = require('mongoskin');
 
-it('save', function(done){
-    superagent.get('http://localhost:80')
-        .end(function(res){
-            var commits = seedCommit.commits;
-            commits.forEach(function(commit, index, list){
-                expect(res.text).to.contain('<h2><li>'+commit.message+'</li>');
-                console.log(commit.message);
-            });
+describe('mongo', function(){
+    var db;
+
+    before(function(done){
+        console.log('before');
+        db = mongo.db('mongodb://localhost:27017/devplanet', {native_parser:true});
+        db.bind('commits');
         done();
-        });
+    });
+
+    describe('save', function(){
+       it('commits save', function(done){
+           var body = seedCommit;
+           var commit={
+               id : body.sender.login,
+               idx : body.sender.id,
+               name : body.pusher.name,
+               email : body.pusher.email,
+               repository : {
+                   name : body.repository.name,
+                   url : body.repository.url,
+                   description : body.repository.description
+               },
+               push_date : body.pushed_at,
+               commits : body.commits
+           }
+
+           db.commits.insert(commit, function(err){
+               if(err) {
+                   return console.log('insert error', err);
+               }
+               console.log('insert commit');
+               done();
+           });
+
+           done();
+       });
+    });
 });
+
