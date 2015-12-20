@@ -10,6 +10,7 @@ var url = require('url');
 var queryString = require('query-string');
 var session = require('express-session');
 var mongo = require('mongoskin');
+var errorUtil = require('./app/util/error-utils');
 var db = mongo.db('mongodb://localhost:27017/devplanet', {native_parser:true});
 db.bind('commits');
 var app = express();
@@ -43,12 +44,16 @@ app.get('/', function(req, res){
     res.render('index', {msg: 'Hello Daily-Commit Project'});
 });
 
-app.get('/:id', function(req, res){
-    var userInfo = req.session.user;
-    var idx = req.params.id;
-    db.commits.find({idx:idx}).sort({push_date : -1}).limit(10).toArray(function(err, commits){
-        userInfo.history = commits;
-        res.render('profile', userInfo);
+app.get('/profile/:id', function(req, res){
+    var id = req.params.id;
+
+    db.commits.find({id:id}).sort({push_date : -1}).limit(10).toArray(function(err, commits){
+        if(commits.length === 0){
+            var error = errorUtil.getRes(404);
+            res.render(error.template, error.msg);
+        }
+
+        res.render('profile', commits);
     });
 });
 
@@ -82,8 +87,8 @@ app.get('/auth', function(req, res){
                         if(!error && response.statusCode == 200){
                             var user = JSON.parse(body);
                             req.session.isAuth = true;
-                            req.session.user = user
-                            res.redirect('/'+user.login);
+                            req.session.user = user;
+                            res.redirect('/profile/'+user.login);
                         }else{
                             console.log('get user info error');
                             res.redirect('/');
@@ -96,7 +101,7 @@ app.get('/auth', function(req, res){
 app.post('/commit', function(req, res){
     var body = req.body;
     var commit={
-        idx : body.sender.id,
+        id : body.sender.id,
         name : body.pusher.name,
         email : body.pusher.email,
         repository : {

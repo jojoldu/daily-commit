@@ -4,10 +4,10 @@
     <% include layout/header %>
 </head>
 <body>
-<%=login%>
+<h1><%=id%> 님 반갑습니다. </h1>
 <ul>
-    <% for(var i=0; i<history.commits.length; i++){ %>
-    <li><%=history.commits[i].message%></li>
+    <% for(var i=0; i<commits.length; i++){ %>
+    <li><%=commits[i].message%></li>
     <% } %>
 </ul>
 </body>
