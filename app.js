@@ -48,12 +48,15 @@ app.get('/profile/:id', function(req, res){
     var id = req.params.id;
 
     db.commits.find({id:id}).sort({push_date : -1}).limit(10).toArray(function(err, commits){
+        var result = {
+            commits : commits
+        }
         if(commits.length === 0){
             var error = errorUtil.getRes(404);
             res.render(error.template, error.msg);
         }
 
-        res.render('profile', commits);
+        res.render('profile', result);
     });
 });
 
@@ -101,7 +104,8 @@ app.get('/auth', function(req, res){
 app.post('/commit', function(req, res){
     var body = req.body;
     var commit={
-        id : body.sender.id,
+        id : body.sender.login,
+        idx : body.sender.id,
         name : body.pusher.name,
         email : body.pusher.email,
         repository : {
@@ -109,7 +113,7 @@ app.post('/commit', function(req, res){
             url : body.repository.url,
             description : body.repository.description
         },
-        push_date : body.updated_at,
+        push_date : body.pushed_at,
         commits : body.commits
     }
 

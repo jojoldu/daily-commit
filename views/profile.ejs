@@ -4,10 +4,9 @@
     <% include layout/header %>
 </head>
 <body>
-<h1><%=id%> 님 반갑습니다. </h1>
 <ul>
     <% for(var i=0; i<commits.length; i++){ %>
-    <li><%=commits[i].message%></li>
+    <li><%=commits[i].commits[0].message%></li>
     <% } %>
 </ul>
 </body>
