@@ -81,6 +81,27 @@ app.get('/auth', function(req, res){
                         console.log('access_token is '+accessToken);
                         res.redirect(domain);
                     }
+                    //
+                    request.post({  url:'https://api.github.com/repos/jojoldu/daily-commit/hooks?access_token='+accessToken,
+                                    headers: {
+                                        'User-Agent': domain
+                                    }},
+                        { form : {
+                                "name": "web",
+                                    "active": true,
+                                    "events": [
+                                    "push",
+                                    "pull_request"
+                                ],
+                                    "config": {
+                                    "url": "http://example.com/webhook",
+                                        "content_type": "json"
+                                }
+                            }
+                        }, function(err, response){
+                            console.log(response);
+                        });
+
                     request.get({
                                 url:'https://api.github.com/user?access_token=' + accessToken,
                                 headers: {
