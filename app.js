@@ -46,26 +46,27 @@ app.get('/', function(req, res){
 
 app.get('/profile/:id', function(req, res){
     var id = req.params.id;
-
-    db.commits.find({id:id}).sort({push_date : -1}).limit(10).toArray(function(err, commits){
-        var result = {
-            commits : commits
-        }
-        if(commits.length === 0){
-            var error = errorUtil.getRes(404);
-            res.render(error.template, error.msg);
-        }
-
-        res.render('profile', result);
-    });
+    res.render('profile', id);
+    
+    //오류남 해결해야함
+    //db.commits.find({id:id}).sort({push_date : -1}).limit(10).toArray(function(err, commits){
+    //    var result = {
+    //        commits : commits
+    //    }
+    //    if(commits.length === 0){
+    //        var error = errorUtil.getRes(404);
+    //        res.render(error.template, error.msg);
+    //    }
+    //
+    //    res.render('profile', result);
+    //});
 });
+var clientId = '917614cfb633b397de81',
+    clientSecret = 'c69ab2f4c6494be57d28ecb89bb4ce364ce7f29a',
+    redirectUri = domain+'/auth';
 
 app.get('/auth', function(req, res){
-    var code = req.query.code,
-        clientId = '917614cfb633b397de81',
-        clientSecret = 'c69ab2f4c6494be57d28ecb89bb4ce364ce7f29a',
-        redirectUri = domain+'/auth';
-
+    var code = req.query.code;
     request.post('https://github.com/login/oauth/access_token',
                 { form : {
                     client_id:clientId,
@@ -74,34 +75,13 @@ app.get('/auth', function(req, res){
                     redirect_uri:redirectUri
                 }},
 
-                function(err, response, body){
+                function(err, response, body) {
                     var queryData = queryString.parse(body);
                     var accessToken = queryData.access_token;
-                    if(!accessToken){
-                        console.log('access_token is '+accessToken);
+                    if (!accessToken) {
+                        console.log('access_token is ' + accessToken);
                         res.redirect(domain);
                     }
-                    //
-                    request.post({  url:'https://api.github.com/repos/jojoldu/daily-commit/hooks?access_token='+accessToken,
-                                    headers: {
-                                        'User-Agent': domain
-                                    }},
-                        { form : {
-                                "name": "web",
-                                    "active": true,
-                                    "events": [
-                                    "push",
-                                    "pull_request"
-                                ],
-                                    "config": {
-                                    "url": "http://example.com/webhook",
-                                        "content_type": "json"
-                                }
-                            }
-                        }, function(err, response){
-                            console.log(response);
-                        });
-
                     request.get({
                                 url:'https://api.github.com/user?access_token=' + accessToken,
                                 headers: {
@@ -145,6 +125,37 @@ app.post('/commit', function(req, res){
     });
 });
 
+app.post('/repo', function(req, res){
+    ////oauth 인증후, access_token으로 저장소 hooks 변경
+    //request({
+    //    url: 'https://api.github.com/repos/jojoldu/nodejs/hooks?access_token=' + accessToken,
+    //    method: 'POST',
+    //    headers: {
+    //        'User-Agent': domain
+    //    },
+    //    json: {
+    //        "name": "web",
+    //        "active": true,
+    //        "events": [
+    //            "push"
+    //        ],
+    //        "config": {
+    //            "url": "http://localhost/commit",
+    //            "content_type": "json",
+    //            "secret":clientSecret
+    //        }
+    //    }
+    //}, function (error, response, body) {
+    //    if (!error && response.statusCode == 201) {
+    //        var result = JSON.parse(body);
+    //        console.log(result);
+    //        next();
+    //    } else {
+    //        console.log('get user info error');
+    //        res.redirect('/');
+    //    }
+    //});
+});
 
 app.listen(80);
 console.log('Express Listening on port 80...');

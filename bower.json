@@ -17,6 +17,8 @@
   ],
   "dependencies": {
     "angular": "~1.4.8",
-    "bootstrap": "~3.3.6"
+    "bootstrap": "~3.3.6",
+    "material-design-lite": "~1.0.6",
+    "Material Design Icon": "material-design-icon#~0.1.1"
   }
 }
