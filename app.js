@@ -12,10 +12,14 @@ var session = require('express-session');
 var mongo = require('mongoskin');
 var errorUtil = require('./app/util/error-utils');
 var db = mongo.db('mongodb://localhost:27017/devplanet', {native_parser:true});
-db.bind('commits');
+db.bind('commit');
+db.bind('user');
 var app = express();
 var domain = 'http://localhost';
-
+//외부 설정파일로 분리
+var clientId = '917614cfb633b397de81',
+    clientSecret = 'c69ab2f4c6494be57d28ecb89bb4ce364ce7f29a',
+    redirectUri = domain+'/auth';
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -31,7 +35,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 
-app.all('/github', function(req, res, next){
+app.use('/profile', function(req, res, next){
     if(req.session && req.session.isAuth){
         next();
         return;
@@ -44,12 +48,20 @@ app.get('/', function(req, res){
     res.render('index', {msg: 'Hello Daily-Commit Project'});
 });
 
-app.get('/profile/:id', function(req, res){
-    var id = req.params.id;
-    res.render('profile', id);
-    
+app.get('/user/:name', function(req, res){
+    var name = req.params.name,
+        user = req.session.user;
+
+    if(name === user.login){
+        //커밋데이터 추출하기
+        res.render('user', user);
+    }
+    res.redirect('/');
+});
+
+app.get('/commit/:name', function(req, res){
     //오류남 해결해야함
-    //db.commits.find({id:id}).sort({push_date : -1}).limit(10).toArray(function(err, commits){
+    //db.commit.find({id:id}).sort({push_date : -1}).limit(10).toArray(function(err, commits){
     //    var result = {
     //        commits : commits
     //    }
@@ -61,9 +73,8 @@ app.get('/profile/:id', function(req, res){
     //    res.render('profile', result);
     //});
 });
-var clientId = '917614cfb633b397de81',
-    clientSecret = 'c69ab2f4c6494be57d28ecb89bb4ce364ce7f29a',
-    redirectUri = domain+'/auth';
+
+
 
 app.get('/auth', function(req, res){
     var code = req.query.code;
@@ -90,9 +101,28 @@ app.get('/auth', function(req, res){
                     }, function (error, response, body) {
                         if(!error && response.statusCode == 200){
                             var user = JSON.parse(body);
-                            req.session.isAuth = true;
-                            req.session.user = user;
-                            res.redirect('/profile/'+user.login);
+                            //DB에 회원정보 존재여부 비교해서 저장
+                            db.user.update(
+                                            {id:user.id},
+                                            {
+                                                id:user.id,
+                                                name:user.login,
+                                                access_token:accessToken
+                                            },
+                                            {upsert:true},
+                                            function(err, result){
+                                                if(err){
+                                                    console.log('user upsert error : ', err);
+                                                    db.close();
+                                                    next();
+                                                }else{
+                                                    req.session.isAuth = true;
+                                                    req.session.user = user;
+                                                    db.close();
+                                                    res.redirect('/user/'+user.login);
+                                                }
+                                            });
+
                         }else{
                             console.log('get user info error');
                             res.redirect('/');
@@ -105,9 +135,8 @@ app.get('/auth', function(req, res){
 app.post('/commit', function(req, res){
     var body = req.body;
     var commit={
-        id : body.sender.login,
-        idx : body.sender.id,
-        name : body.pusher.name,
+        name : body.sender.login,
+        id : body.sender.id,
         email : body.pusher.email,
         repository : {
             name : body.repository.name,

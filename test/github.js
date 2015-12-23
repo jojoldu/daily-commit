@@ -11,7 +11,7 @@ describe('mongo', function(){
     before(function(done){
         console.log('before');
         db = mongo.db('mongodb://localhost:27017/devplanet', {native_parser:true});
-        db.bind('commits');
+        db.bind('commit');
         done();
     });
 
@@ -19,9 +19,8 @@ describe('mongo', function(){
        it('commits save', function(done){
            var body = seedCommit;
            var commit={
-               id : body.sender.login,
-               idx : body.sender.id,
-               name : body.pusher.name,
+               name : body.sender.login,
+               id : body.sender.id,
                email : body.pusher.email,
                repository : {
                    name : body.repository.name,
