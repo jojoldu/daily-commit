@@ -50,13 +50,30 @@ app.get('/', function(req, res){
 
 app.get('/user/:name', function(req, res){
     var name = req.params.name,
-        user = req.session.user;
+        user = req.session.user,
+        result={};
 
     if(name === user.login){
-        //커밋데이터 추출하기
-        res.render('user', user);
+       db.user.find({name:name}, function(err, response){
+          var accessToken = response.access_token;
+
+          request.get({
+              url:'https://api.github.com/users/'+name+'/repos?access_token=' + accessToken,
+              headers: {
+                  'User-Agent': domain
+              }}, function(err, response, body){
+                if(err){
+                    console.log('get repos error'+ err);
+                    res.redirect('/');
+                }
+                result.repos = body;
+                next();
+          });
+       });
     }
-    res.redirect('/');
+
+    result.user = user;
+    res.render('user', result);
 });
 
 app.get('/commit/:name', function(req, res){
