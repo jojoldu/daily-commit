@@ -28,14 +28,14 @@ app.use(session({
     secret: 'daily commit jojoldu',
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 60000 }
+    cookie: { maxAge: 7200000 } //2시간
 }));
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 
-app.use('/profile', function(req, res, next){
+app.use('/user', function(req, res, next){
     if(req.session && req.session.isAuth){
         next();
         return;
@@ -53,6 +53,8 @@ app.get('/user/:name', function(req, res){
         user = req.session.user,
         result={};
 
+    result.user = user;
+
     if(name === user.login){
        db.user.find({name:name}, function(err, response){
           var accessToken = response.access_token;
@@ -67,13 +69,12 @@ app.get('/user/:name', function(req, res){
                     res.redirect('/');
                 }
                 result.repos = body;
-                next();
+                res.render('user', result);
           });
        });
+    }else{
+        res.render('user', result);
     }
-
-    result.user = user;
-    res.render('user', result);
 });
 
 app.get('/commit/:name', function(req, res){
