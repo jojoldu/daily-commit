@@ -10,7 +10,7 @@ var url = require('url');
 var queryString = require('query-string');
 var session = require('express-session');
 var mongo = require('mongoskin');
-var errorUtil = require('./app/util/error-utils');
+var errorUtil = require('./routes/util/error-utils');
 var db = mongo.db('mongodb://localhost:27017/devplanet', {native_parser:true});
 db.bind('commit');
 db.bind('user');
@@ -37,8 +37,7 @@ app.set('view engine', 'ejs');
 
 app.use('/user', function(req, res, next){
     if(req.session && req.session.isAuth){
-        next();
-        return;
+        return next();
     }
 
     res.redirect('/');
@@ -50,31 +49,30 @@ app.get('/', function(req, res){
 
 app.get('/user/:name', function(req, res){
     var name = req.params.name,
-        user = req.session.user,
+        sessionUser = req.session.user,
         result={};
 
-    result.user = user;
-
-    if(name === user.login){
-       db.user.find({name:name}, function(err, response){
-          var accessToken = response.access_token;
-
-          request.get({
-              url:'https://api.github.com/users/'+name+'/repos?access_token=' + accessToken,
-              headers: {
-                  'User-Agent': domain
-              }}, function(err, response, body){
-                if(err){
-                    console.log('get repos error'+ err);
-                    res.redirect('/');
-                }
-                result.repos = body;
-                res.render('user', result);
-          });
-       });
-    }else{
-        res.render('user', result);
+    if(name !== sessionUser.login){
+        res.redirect('/');
     }
+
+    db.user.findOne({name:name}, function(err, user){
+        var accessToken = user.access_token;
+
+        request.get({
+            url:'https://api.github.com/users/'+name+'/repos?access_token=' + accessToken,
+            headers: {
+                'User-Agent': domain
+            }}, function(err, response, body){
+            if(err || !body){
+                console.log('get repos error'+ err);
+                res.redirect('/');
+            }
+            result.user = sessionUser;
+            result.repos = JSON.parse(body);
+            res.render('user', result);
+        });
+    });
 });
 
 app.get('/commit/:name', function(req, res){
@@ -97,55 +95,53 @@ app.get('/commit/:name', function(req, res){
 app.get('/auth', function(req, res){
     var code = req.query.code;
     request.post('https://github.com/login/oauth/access_token',
-                { form : {
-                    client_id:clientId,
-                    client_secret:clientSecret,
-                    code:code,
-                    redirect_uri:redirectUri
-                }},
+        { form : {
+            client_id:clientId,
+            client_secret:clientSecret,
+            code:code,
+            redirect_uri:redirectUri
+        }},
 
-                function(err, response, body) {
-                    var queryData = queryString.parse(body);
-                    var accessToken = queryData.access_token;
-                    if (!accessToken) {
-                        console.log('access_token is ' + accessToken);
-                        res.redirect(domain);
-                    }
-                    request.get({
-                                url:'https://api.github.com/user?access_token=' + accessToken,
-                                headers: {
-                                    'User-Agent': domain
-                                }
-                    }, function (error, response, body) {
-                        if(!error && response.statusCode == 200){
-                            var user = JSON.parse(body);
-                            //DB에 회원정보 존재여부 비교해서 저장
-                            db.user.update(
-                                            {id:user.id},
-                                            {
-                                                id:user.id,
-                                                name:user.login,
-                                                access_token:accessToken
-                                            },
-                                            {upsert:true},
-                                            function(err, result){
-                                                if(err){
-                                                    console.log('user upsert error : ', err);
-                                                    db.close();
-                                                    next();
-                                                }else{
-                                                    req.session.isAuth = true;
-                                                    req.session.user = user;
-                                                    db.close();
-                                                    res.redirect('/user/'+user.login);
-                                                }
-                                            });
+        function(err, response, body) {
+            var queryData = queryString.parse(body);
+            var accessToken = queryData.access_token;
+            if (!accessToken) {
+                console.log('access_token is ' + accessToken);
+                res.redirect(domain);
+            }
+            request.get({
+                url:'https://api.github.com/user?access_token=' + accessToken,
+                headers: {
+                    'User-Agent': domain
+                }
+            }, function (error, response, body) {
+                if(!error && response.statusCode == 200){
+                    var user = JSON.parse(body);
+                    //DB에 회원정보 존재여부 비교해서 저장
+                    db.user.update(
+                        {id:user.id},
+                        {
+                            id:user.id,
+                            name:user.login,
+                            access_token:accessToken
+                        },
+                        {upsert:true},
+                        function(err, result, next){
+                            if(err){
+                                console.log('user upsert error : ', err);
+                                next();
+                            }else{
+                                req.session.isAuth = true;
+                                req.session.user = user;
+                                res.redirect('/user/'+user.login);
+                            }
+                        });
 
-                        }else{
-                            console.log('get user info error');
-                            res.redirect('/');
-                        }
-                    });
+                }else{
+                    console.log('get user info error');
+                    res.redirect('/');
+                }
+            });
         }
     )
 });
