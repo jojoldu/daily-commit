@@ -3,9 +3,10 @@
 <head>
     <% include layout/header %>
     <link href="/css/styles.css" rel="stylesheet" type="text/css"/>
+    <script src="/js/controller/user.js"></script>
 </head>
-<body>
-    <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+<body ng-app="user" ng-controller="userCtrl">
+    <div ng-init="init('<%= user%>')" class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
         <header class="demo-header mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600">
             <div class="mdl-layout__header-row">
                 <span class="mdl-layout-title">Home</span>
@@ -33,8 +34,13 @@
         <main class="mdl-layout__content mdl-color--grey-100">
             <div class="mdl-grid demo-content">
                 <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid">
-                    <ul>
-
+                    <ul ng-repeat="repo in user.repos">
+                        <li>
+                            <label ng-attr-for="{{'chkbox'+$index}}" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-upgraded">
+                                <input type="checkbox" ng-attr-id="{{'chkbox'+$index}}" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">{{repo.name}}</span>
+                            </label>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -87,7 +93,6 @@
             </g>
         </defs>
     </svg>
-
     <% include layout/footer %>
 </body>
 </html>

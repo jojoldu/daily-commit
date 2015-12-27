@@ -68,9 +68,9 @@ app.get('/user/:name', function(req, res){
                 console.log('get repos error'+ err);
                 res.redirect('/');
             }
-            result.user = sessionUser;
+            result.info = sessionUser;
             result.repos = JSON.parse(body);
-            res.render('user', result);
+            res.render('user', {user : JSON.stringify(result)});
         });
     });
 });
