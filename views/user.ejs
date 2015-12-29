@@ -33,16 +33,20 @@
         <% include layout/lnb %>
         <main class="mdl-layout__content mdl-color--grey-100">
             <div class="mdl-grid demo-content">
-                <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid">
-                    <ul ng-repeat="repo in user.repos">
-                        <li>
-                            <label ng-attr-for="{{'chkbox'+$index}}" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events is-upgraded">
-                                <input type="checkbox" ng-attr-id="{{'chkbox'+$index}}" class="mdl-checkbox__input">
-                                <span class="mdl-checkbox__label">{{repo.name}}</span>
-                            </label>
-                        </li>
-                    </ul>
-                </div>
+                    <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp mdl-cell--12-col">
+                        <thead>
+                            <tr>
+                                <th class="mdl-data-table__cell--non-numeric">Project Name</th>
+                                <th class="mdl-data-table__cell--non-numeric">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="repo in user.repos">
+                                <td class="mdl-data-table__cell--non-numeric"><span class="mdl-checkbox__label">{{repo.name}}</span></td>
+                                <td class="mdl-data-table__cell--non-numeric"><span class="mdl-checkbox__label">{{repo.description}}</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
             </div>
         </main>
     </div>
