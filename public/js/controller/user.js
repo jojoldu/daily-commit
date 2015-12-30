@@ -3,7 +3,7 @@
  */
 
 angular.module('user', [])
-.controller('userCtrl', function($scope){
+.controller('userCtrl', function($scope, $http){
     $scope.init = function(strData){
         $scope.user = JSON.parse(strData);
     }
