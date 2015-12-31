@@ -44,7 +44,7 @@ app.use('/user', function(req, res, next){
 });
 
 app.get('/', function(req, res){
-    res.render('index', {msg: 'Hello Daily-Commit Project'});
+    res.render('index', {msg: 'Hello Daily Commit'});
 });
 
 app.get('/user/:name', function(req, res){
@@ -70,9 +70,17 @@ app.get('/user/:name', function(req, res){
             }
             result.info = sessionUser;
             result.repos = JSON.parse(body);
-            res.render('user', {user : JSON.stringify(result)});
+            res.render('user/user', {user : JSON.stringify(result)});
         });
     });
+});
+
+app.post('/user/repos', function(req, res){
+    var user = req.session.user,
+        repos = req.body;
+
+    
+
 });
 
 app.get('/commit/:name', function(req, res){

@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <% include layout/header %>
+    <% include ../layout/header %>
     <link href="/css/styles.css" rel="stylesheet" type="text/css"/>
-    <script src="/js/controller/user.js"></script>
+    <script src="/js/user/controller.js"></script>
+    <script src="/js/user/directive.js"></script>
     <style>
         #save {
             position: fixed;
@@ -16,7 +17,7 @@
         }
     </style>
 </head>
-<body ng-app="user" ng-controller="userCtrl">
+<body ng-app="user" ng-controller="userCtrl" user-repos>
     <div ng-init="init('<%= user%>')" class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
         <header class="demo-header mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600">
             <div class="mdl-layout__header-row">
@@ -41,7 +42,7 @@
                 </ul>
             </div>
         </header>
-        <% include layout/lnb %>
+        <% include ../layout/lnb %>
         <main class="mdl-layout__content mdl-color--grey-100">
             <div class="mdl-grid demo-content">
                 <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp mdl-cell--12-col">
@@ -52,10 +53,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                        <tr ng-hide="user.repos.length">
-                            <td colspan="2" class="mdl-data-table__cell--non-numeric"><span class="mdl-checkbox__label"> No Repositories </span></td>
-                        </tr>
-                        <tr ng-repeat="repo in user.repos" ng-attr-id="{{repo.id}}">
+                        <tr ng-repeat="repo in user.repos" ng-attr-id="{{repo.id}}" ng-click="check(repo.id)">
                             <td class="mdl-data-table__cell--non-numeric"><span class="mdl-checkbox__label">{{repo.name}}</span></td>
                             <td class="mdl-data-table__cell--non-numeric"><span class="mdl-checkbox__label">{{repo.description}}</span></td>
                         </tr>
@@ -71,6 +69,6 @@
             </span>
         </span>
     </button>
-<% include layout/footer %>
+<% include ../layout/footer %>
 </body>
 </html>
