@@ -206,7 +206,6 @@ app.post('/commit', function(req, res){
     var commit={
         name : body.sender.login,
         id : body.sender.id,
-        email : body.pusher.email,
         repository : {
             name : body.repository.name,
             url : body.repository.url,
@@ -216,10 +215,11 @@ app.post('/commit', function(req, res){
         commits : body.commits
     };
 
-    db.commits.insert(commit, function(err){
+    db.commit.insert(commit, function(err){
         if(err) {
             return console.log('insert error', err);
         }
+        res.json(true);
     });
 });
 
