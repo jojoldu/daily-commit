@@ -53,7 +53,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="repo in user.repos" ng-attr-id="{{repo.id}}" ng-click="check(repo.id)">
+                        <tr ng-repeat="repo in user.repos" ng-attr-id="{{repo.name}}">
                             <td class="mdl-data-table__cell--non-numeric"><span class="mdl-checkbox__label">{{repo.name}}</span></td>
                             <td class="mdl-data-table__cell--non-numeric"><span class="mdl-checkbox__label">{{repo.description}}</span></td>
                         </tr>

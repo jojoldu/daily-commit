@@ -22,7 +22,17 @@ angular.module('user', [])
                 for(var i=0;i<checkedRepos.length;i++){
                     data.push(checkedRepos[i].id);
                 }
-                console.log(data);
+
+                $http.post('http://localhost/user/repos', data)
+                    .then(function(res){
+                        if(angular.isArray(res)){
+                            console.log(res+'가 실패했습니다.');
+                        }else{
+                            alert('성공');
+                        }
+                    }, function(){
+
+                    });
             }
         }
     });

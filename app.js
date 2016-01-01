@@ -9,14 +9,17 @@ var request = require('request');
 var url = require('url');
 var queryString = require('query-string');
 var session = require('express-session');
+var app = express();
+
+//datasource 분리
 var mongo = require('mongoskin');
-var errorUtil = require('./routes/util/error-utils');
 var db = mongo.db('mongodb://localhost:27017/devplanet', {native_parser:true});
 db.bind('commit');
 db.bind('user');
-var app = express();
-var domain = 'http://localhost';
+
 //외부 설정파일로 분리
+var domain = 'http://localhost';
+var tempDomain = 'http://bf1247e8.ngrok.io';
 var clientId = '917614cfb633b397de81',
     clientSecret = 'c69ab2f4c6494be57d28ecb89bb4ce364ce7f29a',
     redirectUri = domain+'/auth';
@@ -76,12 +79,55 @@ app.get('/user/:name', function(req, res){
 });
 
 app.post('/user/repos', function(req, res){
-    var user = req.session.user,
-        repos = req.body;
+    var sessionUser = req.session.user,
+        repos = req.body,
+        accessToken = req.session.accessToken,
+        failRepos = [],
+        result;
 
-    
+    if(repos.length < 1 || !accessToken){
+        res.json(false);
+    }
 
-});
+    for(var i=0;i<repos.length;i++){
+        //oauth 인증후, access_token으로 저장소 hooks 변경
+        result = setHooks(sessionUser.login, repos[i], accessToken);
+        if(result !== true){
+            failRepos.push(result);
+        }
+    }
+
+    res.json(failRepos.length >0? failRepos : true);
+ });
+
+function setHooks(userName, repoName, accessToken){
+    request({
+        url: 'https://api.github.com/repos/'+userName+'/'+repoName+'/hooks?access_token=' + accessToken,
+        method: 'POST',
+        headers: {
+            'User-Agent': domain
+        },
+        json: {
+            "name": "web",
+            "active": true,
+            "events": [
+                "push"
+            ],
+            "config": {
+                "url": tempDomain+'/commit',
+                "content_type": "json",
+                "secret":clientSecret
+            }
+        }
+    }, function (error, response) {
+        if (!error && response.statusCode == 201) {
+            return true;
+        } else {
+            console.log('set webhooks error : ' + repoName);
+            return repoName;
+        }
+    });
+}
 
 app.get('/commit/:name', function(req, res){
     //오류남 해결해야함
@@ -141,6 +187,7 @@ app.get('/auth', function(req, res){
                             }else{
                                 req.session.isAuth = true;
                                 req.session.user = user;
+                                req.session.accessToken = accessToken;
                                 res.redirect('/user/'+user.login);
                             }
                         });
@@ -167,7 +214,7 @@ app.post('/commit', function(req, res){
         },
         push_date : body.pushed_at,
         commits : body.commits
-    }
+    };
 
     db.commits.insert(commit, function(err){
         if(err) {
@@ -177,35 +224,7 @@ app.post('/commit', function(req, res){
 });
 
 app.post('/repo', function(req, res){
-    ////oauth 인증후, access_token으로 저장소 hooks 변경
-    //request({
-    //    url: 'https://api.github.com/repos/jojoldu/nodejs/hooks?access_token=' + accessToken,
-    //    method: 'POST',
-    //    headers: {
-    //        'User-Agent': domain
-    //    },
-    //    json: {
-    //        "name": "web",
-    //        "active": true,
-    //        "events": [
-    //            "push"
-    //        ],
-    //        "config": {
-    //            "url": "http://localhost/commit",
-    //            "content_type": "json",
-    //            "secret":clientSecret
-    //        }
-    //    }
-    //}, function (error, response, body) {
-    //    if (!error && response.statusCode == 201) {
-    //        var result = JSON.parse(body);
-    //        console.log(result);
-    //        next();
-    //    } else {
-    //        console.log('get user info error');
-    //        res.redirect('/');
-    //    }
-    //});
+
 });
 
 app.listen(80);
