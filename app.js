@@ -19,7 +19,7 @@ db.bind('user');
 
 //외부 설정파일로 분리
 var domain = 'http://localhost';
-var tempDomain = 'http://bf1247e8.ngrok.io';
+var tempDomain = 'http://fd5f9907.ngrok.io/commit';
 var clientId = '917614cfb633b397de81',
     clientSecret = 'c69ab2f4c6494be57d28ecb89bb4ce364ce7f29a',
     redirectUri = domain+'/auth';
@@ -36,7 +36,6 @@ app.use(session({
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
 
 app.use('/user', function(req, res, next){
     if(req.session && req.session.isAuth){
@@ -68,7 +67,7 @@ app.get('/user/:name', function(req, res){
                 'User-Agent': domain
             }}, function(err, response, body){
             if(err || !body){
-                console.log('get repos error'+ err);
+                console.log('get repos error '+ err);
                 res.redirect('/');
             }
             result.info = sessionUser;
@@ -95,9 +94,11 @@ app.post('/user/repos', function(req, res){
         if(result !== true){
             failRepos.push(result);
         }
-    }
 
-    res.json(failRepos.length >0? failRepos : true);
+        if(i === repos.length-1){
+            res.json(failRepos.length >0? failRepos : true);
+        }
+    }
  });
 
 function setHooks(userName, repoName, accessToken){
@@ -114,13 +115,14 @@ function setHooks(userName, repoName, accessToken){
                 "push"
             ],
             "config": {
-                "url": tempDomain+'/commit',
+                "url": tempDomain,
                 "content_type": "json",
                 "secret":clientSecret
             }
         }
     }, function (error, response) {
         if (!error && response.statusCode == 201) {
+
             return true;
         } else {
             console.log('set webhooks error : ' + repoName);
